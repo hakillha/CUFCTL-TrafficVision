@@ -1,0 +1,8 @@
+**__pycache__
+**.DS_Store
+**.pyc
+data/tfrecords/*
+data/pretrained/*
+data/checkpoints/*
+data/eval/*
+*.o*
