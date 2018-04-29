@@ -6,7 +6,7 @@ module add anaconda3/4.3.0
 module add cuda-toolkit/8.0.44
 module add cuDNN/8.0v6
 
-source activate dac
+source activate trafficv
 
 cd $TRAFFICVISION
 
