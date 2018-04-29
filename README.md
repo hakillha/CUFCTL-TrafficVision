@@ -1,5 +1,7 @@
 # CUFCTL-TrafficVision
 
+[Setup on Palmetto](docs/SETUP.md)
+
 TMP1=/home/yingges/Desktop/Research/2018Q1
 
 export PYTHONPATH=${TMP1}/CUFCTL-TrafficVision/models/research:${TMP1}/CUFCTL-TrafficVision/models/research/slim
