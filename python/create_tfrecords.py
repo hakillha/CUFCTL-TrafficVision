@@ -11,7 +11,7 @@ def parse_args():
 						dest='out_path', help='')
 	parser.add_argument('--label_map_path',
 						dest='label_map_path', help='')
-	parser.add_argument('--occ_ratio_threshold',
+	parser.add_argument('--occ_ratio_threshold', type=float,
 						dest='occ_ratio_threshold', help='')
 	return parser.parse_args()
 
