@@ -9,6 +9,10 @@ def parse_args():
 						dest='in_path', help='')
 	parser.add_argument('--out_path',
 						dest='out_path', help='')
+	parser.add_argument('--label_map_path',
+						dest='label_map_path', help='')
+	parser.add_argument('--occ_ratio_threshold',
+						dest='occ_ratio_threshold', help='')
 	return parser.parse_args()
 
 args = parse_args()
@@ -21,4 +25,4 @@ create_labelmap(labels)
 # create_trainval_set(args.in_path, train=0.8, val=0.2)
 
 #
-gen_tfrecords(args.in_path, train=0.8, val=0.2)
+gen_tfrecords(args.in_path, train=0.8, val=0.2, occ_ratio_threshold=args.occ_ratio_threshold)

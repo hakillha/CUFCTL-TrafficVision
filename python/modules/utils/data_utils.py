@@ -69,7 +69,7 @@ def create_trainval_set(in_path, train, val):
 # 	f_train.close()
 # 	f_val.close()
 
-def gen_tfrecords(in_path, out_path='data/tfrecords', label_map_path='data/ua_detrac_labelmap.pbtxt', train=0.8, val=0.2):
+def gen_tfrecords(in_path, out_path='data/tfrecords', label_map_path='data/ua_detrac_labelmap.pbtxt', train=0.8, val=0.2, occ_ratio_threshold = 0.4):
 	better_makedirs(out_path)
 	train_writer = tf.python_io.TFRecordWriter(out_path + '/uadetrac_train.record')
 	val_writer = tf.python_io.TFRecordWriter(out_path + '/uadetrac_val.record')
@@ -107,10 +107,19 @@ def gen_tfrecords(in_path, out_path='data/tfrecords', label_map_path='data/ua_de
 				difficult_obj = []
 				for detect in child[0]:
 					bbox = detect[0]
+					bb_width = float(bbox.attrib['width'])
+					bb_height = float(bbox.attrib['height'])
 					xmin.append(float(bbox.attrib['left']) / img_width)
 					ymin.append(float(bbox.attrib['top']) / img_height)
-					xmax.append((float(bbox.attrib['left']) + float(bbox.attrib['width'])) / img_width)
-					ymax.append((float(bbox.attrib['top']) + float(bbox.attrib['height'])) / img_height)
+					xmax.append((float(bbox.attrib['left']) + bb_width) / img_width)
+					ymax.append((float(bbox.attrib['top']) + bb_height) / img_height)
+
+					if len(detect) == 3:
+						occ = detect[2][0]
+						occ_ratio = float(occ.attrib['width']) * float(occ.attrib['height']) / (bb_width * bb_height )
+						if occ_ratio > occ_ratio_threshold:
+							continue
+
 					att = detect[1]
 					classes_text.append(att.attrib['vehicle_type'].encode('utf8'))
 					classes.append(label_map_dict[att.attrib['vehicle_type']])
