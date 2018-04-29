@@ -15,6 +15,8 @@ Add necessary modules
 	module add anaconda3/4.3.0
 	module add cuda-toolkit/8.0.44
 	module add cuDNN/8.0v6
+	module add cuda-toolkit/9.0.176
+	module add cuDNN/9.0v7
 
 Add the following paths to your .bashrc file:
 
