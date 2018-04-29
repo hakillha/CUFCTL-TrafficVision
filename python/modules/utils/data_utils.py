@@ -13,7 +13,7 @@ def better_makedirs(path):
 	"""
 	try:
 		os.makedirs(path)
-	except OSError, e:
+	except OSError as e:
 		if e.errno != os.errno.EEXIST:
 			raise
 
