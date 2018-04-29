@@ -69,7 +69,7 @@ def create_trainval_set(in_path, train, val):
 # 	f_train.close()
 # 	f_val.close()
 
-def gen_tfrecords(in_path, out_path='data/tfrecords', label_map_path='data/ua_detrac_labelmap.pbtxt', train=0.8, val=0.2, occ_ratio_threshold = 0.4):
+def gen_tfrecords(in_path, out_path='data/tfrecords', label_map_path='data/ua_detrac_labelmap.pbtxt', train=0.8, val=0.2, occ_ratio_threshold=0.4):
 	better_makedirs(out_path)
 	train_writer = tf.python_io.TFRecordWriter(out_path + '/uadetrac_train.record')
 	val_writer = tf.python_io.TFRecordWriter(out_path + '/uadetrac_val.record')
