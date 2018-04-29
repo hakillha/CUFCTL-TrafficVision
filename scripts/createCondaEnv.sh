@@ -2,7 +2,7 @@
 
 # Create conda environment
 echo "Creating conda environment"
-conda create -n dac python=3.5 --yes
+conda create -n trafficv python=3.5 --yes
 
 # Activate created conda environment
 echo "Activating conda environment"
