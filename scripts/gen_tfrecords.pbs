@@ -1,0 +1,16 @@
+#PBS -N gen_tfrecords
+#PBS -l select=1:ncpus=20:mem=64gb,walltime=48:00:00
+#PBS -j oe
+
+module add anaconda3/4.3.0
+module add cuda-toolkit/8.0.44
+module add cuDNN/8.0v6
+
+source activate dac
+
+cd $TRAFFICVISION
+
+python python/create_tfrecords.py \
+	--in_path=/scratch2/yingges/data/UA_DETRAC \
+	--occ_ratio_threshold=0.4
+
