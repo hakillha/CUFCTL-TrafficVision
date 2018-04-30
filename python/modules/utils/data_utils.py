@@ -106,6 +106,12 @@ def gen_tfrecords(in_path, out_path='data/tfrecords', label_map_path='data/ua_de
 				poses = []
 				difficult_obj = []
 				for detect in child[0]:
+					if len(detect) == 3:
+						occ = detect[2][0]
+						occ_ratio = float(occ.attrib['width']) * float(occ.attrib['height']) / (bb_width * bb_height )
+						if occ_ratio > occ_ratio_threshold:
+							continue
+
 					bbox = detect[0]
 					bb_width = float(bbox.attrib['width'])
 					bb_height = float(bbox.attrib['height'])
@@ -113,12 +119,6 @@ def gen_tfrecords(in_path, out_path='data/tfrecords', label_map_path='data/ua_de
 					ymin.append(float(bbox.attrib['top']) / img_height)
 					xmax.append((float(bbox.attrib['left']) + bb_width) / img_width)
 					ymax.append((float(bbox.attrib['top']) + bb_height) / img_height)
-
-					if len(detect) == 3:
-						occ = detect[2][0]
-						occ_ratio = float(occ.attrib['width']) * float(occ.attrib['height']) / (bb_width * bb_height )
-						if occ_ratio > occ_ratio_threshold:
-							continue
 
 					att = detect[1]
 					classes_text.append(att.attrib['vehicle_type'].encode('utf8'))
