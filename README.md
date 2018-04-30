@@ -23,14 +23,18 @@ python python/create_tfrecords.py \
 --in_path=/media/yingges/TOSHIBA\ EXT/datasets/trafficvision/UADETRAC \  
 --out_path=/media/yingges/TOSHIBA\ EXT/datasets/trafficvision/UADETRAC_TFODAPI
 
-python python/create_tfrecords.py --in_path=/media/yingges/TOSHIBA\ EXT/datasets/trafficvision/UADETRAC
+python python/create_tfrecords.py \  
+	--in_path=/media/yingges/TOSHIBA\ EXT/datasets/trafficvision/UADETRAC \  
+	--occ_ratio_threshold=0.4
 
+# palmetto  
 python models/research/object_detection/train.py \
 	--logtostderr \
 	--pipeline_config_path=data/pretrained/faster_rcnn_resnet50_coco_2018_01_28/faster_rcnn_resnet50_coco.config01 \
 	--train_dir=data/checkpoints/faster_rcnn_resnet50_ua_detrac_2018_04_29_01
 
+# local  
 python models/research/object_detection/train.py \
 	--logtostderr \
-	--pipeline_config_path=data/pretrained/faster_rcnn_resnet50_coco_2018_01_28/faster_rcnn_resnet50_coco.config01 \
+	--pipeline_config_path=data/pretrained/faster_rcnn_resnet50_coco_2018_01_28/faster_rcnn_resnet50_coco.config \
 	--train_dir=data/checkpoints/faster_rcnn_resnet50_ua_detrac_2018_04_29_01
