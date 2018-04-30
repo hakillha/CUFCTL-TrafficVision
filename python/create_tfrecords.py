@@ -25,4 +25,5 @@ create_labelmap(labels)
 # create_trainval_set(args.in_path, train=0.8, val=0.2)
 
 #
+assert args.occ_ratio_threshold != None
 gen_tfrecords(args.in_path, train=0.8, val=0.2, occ_ratio_threshold=args.occ_ratio_threshold)
