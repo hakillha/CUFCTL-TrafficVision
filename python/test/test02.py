@@ -41,9 +41,11 @@ with tf.Session() as sess:
     # Creates batches by randomly shuffling tensors
     # images, labels = tf.train.shuffle_batch([image, label], batch_size=10, capacity=30, num_threads=1, min_after_dequeue=10)
 
-        # Initialize all global and local variables
-    init_op = tf.group(tf.global_variables_initializer(), tf.local_variables_initializer())
-    sess.run(init_op)
+
+    # Initialize all global and local variables
+    # init_op = tf.group(tf.global_variables_initializer(), tf.local_variables_initializer())
+    # sess.run(init_op)
+
     # Create a coordinator and run all QueueRunner objects
     coord = tf.train.Coordinator()
     threads = tf.train.start_queue_runners(coord=coord)
