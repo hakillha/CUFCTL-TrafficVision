@@ -1,5 +1,4 @@
-filename = 'data/tfrecords/uadetrac_val.record'
-dataset = tf.data.TFRecordDataset(filename)
+import tensorflow as tf
 
 def read(serialized_example):
 	features = tf.parse_single_example(
@@ -18,9 +17,25 @@ def read(serialized_example):
 										'image/object/view': tf.VarLenFeature(dtype=tf.int64)
 										})
 	
-	image = tf.decode_raw(features['image/filename'], tf.string)
+	# print(features)
+
+	filename = features['image/filename']
 	image = tf.decode_raw(features['image/encoded'], tf.uint8)
-	image = tf.decode_raw(features['image/object/bbox/xmin'], tf.float32)
-	image = tf.decode_raw(features['image/object/bbox/xmax'], tf.float32)
-	image = tf.decode_raw(features['image/object/bbox/ymin'], tf.float32)
-	image = tf.decode_raw(features['image/object/bbox/ymax'], tf.float32)
+	xmin = features['image/object/bbox/xmin']
+	xmax = features['image/object/bbox/xmax']
+	ymin = features['image/object/bbox/ymin']
+	ymax = features['image/object/bbox/ymax']
+
+	# return filename, image
+	return filename
+
+# filename = 'data/tfrecords/uadetrac_val.record'
+filename = '/media/yingges/TOSHIBA EXT/models/201805/data/tfrecords/uadetrac_val.record'
+dataset = tf.data.TFRecordDataset(filename)
+# (filename, image) = dataset.map(read)
+outdict = dataset.map(read)
+# print(filename)
+# print(image)
+# print(outdict[0])
+# print(outdict[1])
+print(outdict)
