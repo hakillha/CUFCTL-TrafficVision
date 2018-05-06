@@ -22,3 +22,8 @@ python models/research/object_detection/train.py \
 	--logtostderr \
 	--pipeline_config_path=${TRAFFICVISION}/data/pretrained/faster_rcnn_inception_resnet_v2_atrous_coco_2018_01_28/pipeline.config \
 	--train_dir=${TRAFFICVISION}/ata/checkpoints/faster_rcnn_inception_resnet_v2_ua_detrac_2018_05_05_01
+
+python models/research/object_detection/train.py \
+        --logtostderr \
+        --pipeline_config_path=${TRAFFICVISION}/data/pretrained/faster_rcnn_nas_lowproposals_coco_2018_01_28/pipeline.config \
+        --train_dir=${TRAFFICVISION}/data/checkpoints/faster_rcnn_nas_lowproposals_coco_2018_05_05_01

@@ -17,15 +17,20 @@ def read(serialized_example):
 										'image/object/view': tf.VarLenFeature(dtype=tf.string)
 										})
 
-	filename = features['image/filename']
-	image = tf.decode_raw(features['image/encoded'], tf.uint8)
-	xmin = features['image/object/bbox/xmin']
-	xmax = features['image/object/bbox/xmax']
-	ymin = features['image/object/bbox/ymin']
-	ymax = features['image/object/bbox/ymax']
+	# filename = features['image/filename']
+	# image = tf.decode_raw(features['image/encoded'], tf.uint8)
+	# xmin = features['image/object/bbox/xmin']
+	# xmax = features['image/object/bbox/xmax']
+	# ymin = features['image/object/bbox/ymin']
+	# ymax = features['image/object/bbox/ymax']
 
-	return filename, image
+	features['image/encoded'] = tf.decode_raw(features['image/encoded'], tf.uint8)
+
+	# featdict = []
+
+	# return filename, image
 	# return filename
+	return features
 
 filename = 'data/tfrecords/uadetrac_val.record'
 # filename = '/media/yingges/TOSHIBA EXT/models/201805/data/tfrecords/uadetrac_val.record'
@@ -37,8 +42,12 @@ next_ele = iterator.get_next()
 
 with tf.Session() as sess:
 	for _ in range(10):
-		filename_out, image_out = sess.run(next_ele)
-		print(filename_out)
+		# filename_out, image_out = sess.run(next_ele)
+		features_out = sess.run(next_ele)
+		imgfname_out = features_out['image/filename']
+		print(imgfname_out)
+		img_out = features_out['image/encoded']
+		print(img_out.shape)
 
 # print(filename)
 # print(image)
