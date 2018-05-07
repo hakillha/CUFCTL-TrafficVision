@@ -123,6 +123,7 @@ def main(_):
 		# plt.show()
 		plt.savefig(output_dir + '/' + imfile.split('/')[-1].split('.')[0] + '.png',
 					bbox_inches='tight')
+		plt.close()
 
 if __name__ == '__main__':
 	tf.app.run()

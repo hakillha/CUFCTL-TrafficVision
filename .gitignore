@@ -7,3 +7,4 @@ data/checkpoints/*
 data/eval/*
 data/inference_output/*
 *.o*
+*.avi
