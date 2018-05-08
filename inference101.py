@@ -84,6 +84,7 @@ def load_image_into_numpy_array(image):
 
 def main(_):
 	fg_path = os.path.join(FLAGS.model_dir, 'frozen_inference_graph.pb')
+	print(fg_path)
 	detection_graph = tf.Graph()
 	with detection_graph.as_default():
 		od_graph_def = tf.GraphDef()
