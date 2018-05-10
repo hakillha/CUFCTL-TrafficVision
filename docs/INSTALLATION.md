@@ -3,6 +3,12 @@
 ### Dependencies
 * Placeholder
 ### Steps
+Set up environment variable
+```
+export PYTHONPATH=${PYTHONPATH}:/path/to/CUFCTL-TrafficVision/models/research
+export PYTHONPATH=${PYTHONPATH}:/path/to/CUFCTL-TrafficVision/models/research/slim
+```
+
 Build Protobuf compiler
 
 Compile the Protobuf files
