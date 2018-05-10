@@ -10,9 +10,20 @@ def parse_args():
 	parser.add_argument('--out_path',
 						dest='out_path', help='')
 	parser.add_argument('--label_map_path',
-						dest='label_map_path', help='')
-	parser.add_argument('--occ_ratio_threshold', type=float,
-						dest='occ_ratio_threshold', help='')
+						dest='label_map_path',
+						help='Label map output path.')
+	parser.add_argument('--occ_ratio_threshold', 
+						default=0.4,
+						dest='occ_ratio_threshold', 
+						help='Discard the bounding boxes with occlusion exceeding this ratio.')
+	parser.add_argument('--train', 
+						default=0.8,
+						dest='train', 
+						help='Training set split.')
+	parser.add_argument('--val', 
+						default=0.2,
+						dest='val', 
+						help='Validation set split.')
 	return parser.parse_args()
 
 args = parse_args()
@@ -24,6 +35,4 @@ labels = ['car', 'bus', 'van', 'others']
 create_labelmap(labels)
 # create_trainval_set(args.in_path, train=0.8, val=0.2)
 
-#
-assert args.occ_ratio_threshold != None
-gen_tfrecords(args.in_path, train=0.8, val=0.2, occ_ratio_threshold=args.occ_ratio_threshold)
+gen_tfrecords(args.in_path, train=args.train, val=args.val, occ_ratio_threshold=args.occ_ratio_threshold)

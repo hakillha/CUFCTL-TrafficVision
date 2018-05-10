@@ -2,7 +2,7 @@ import cv2
 import os
 
 image_folder = 'data/inference_output/MVI_40714'
-video_name = 'video02.avi'
+video_name = 'video01.avi'
 
 images = sorted([img for img in os.listdir(image_folder) if img.endswith(".png")])
 frame = cv2.imread(os.path.join(image_folder, images[0]))
