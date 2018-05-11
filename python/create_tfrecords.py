@@ -4,15 +4,34 @@ from modules.utils.data_utils import create_data_dir, copy_images, convert_xml
 from modules.utils.data_utils import create_labelmap, create_trainval_set, gen_tfrecords
 
 def parse_args():
-	parser = argparse.ArgumentParser(description='')
+	parser = argparse.ArgumentParser(description='Convert the UA-DETRAC dataset into tfrecords.')
 	parser.add_argument('--in_path',
-						dest='in_path', help='')
+						dest='in_path', 
+						help='The folder that contains \'Insight-MVT_Annotation_Train\'.')
 	parser.add_argument('--out_path',
-						dest='out_path', help='')
+						default='data/tfrecords',
+						dest='out_path', 
+						help='Defaults to \'data/tfrecords\'')
 	parser.add_argument('--label_map_path',
-						dest='label_map_path', help='')
-	parser.add_argument('--occ_ratio_threshold', type=float,
-						dest='occ_ratio_threshold', help='')
+						default='data/ua_detrac_labelmap.pbtxt',
+						dest='label_map_path',
+						help='Specify input label map file path. '
+						'Defaults to \'data/ua_detrac_labelmap.pbtxt\'')
+	parser.add_argument('--occ_ratio_threshold', 
+						default=0.4,
+						dest='occ_ratio_threshold', 
+						help='Discard the bounding boxes with occlusion exceeding this ratio. '
+						'Defaults to .4.')
+	parser.add_argument('--train', 
+						default=0.8,
+						dest='train', 
+						help='Training set split (e.g., 0.8). Must add up to 1 with the val split. '
+						'Defaults to .8.')
+	parser.add_argument('--val', 
+						default=0.2,
+						dest='val', 
+						help='Validation set split (e.g., 0.2). Must add up to 1 with the train split. '
+						'Defaults to .2.')
 	return parser.parse_args()
 
 args = parse_args()
@@ -24,6 +43,6 @@ labels = ['car', 'bus', 'van', 'others']
 create_labelmap(labels)
 # create_trainval_set(args.in_path, train=0.8, val=0.2)
 
-#
-assert args.occ_ratio_threshold != None
-gen_tfrecords(args.in_path, train=0.8, val=0.2, occ_ratio_threshold=args.occ_ratio_threshold)
+gen_tfrecords(args.in_path, train=args.train, val=args.val,
+			  out_path=args.out_path, label_map_path=args.label_map_path,
+			  occ_ratio_threshold=args.occ_ratio_threshold)

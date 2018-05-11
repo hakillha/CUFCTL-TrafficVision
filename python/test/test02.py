@@ -1,7 +1,8 @@
 import tensorflow as tf
 import numpy as np
 import matplotlib.pyplot as plt
-data_path = '/media/yingges/TOSHIBA EXT/models/201805/data/tfrecords/uadetrac_val.record'  # address to save the hdf5 file
+# data_path = '/media/yingges/TOSHIBA EXT/models/201805/data/tfrecords/uadetrac_val.record'  # address to save the hdf5 file
+data_path = 'data/tfrecords/uadetrac_val.record'
 
 with tf.Session() as sess:
     feature={
@@ -27,6 +28,7 @@ with tf.Session() as sess:
     features = tf.parse_single_example(serialized_example, features=feature)
     # Convert the image data from string back to the numbers
     image = tf.decode_raw(features['image/encoded'], tf.uint8)
+    print(image)
     
     # Cast label data into int32
     tmp1 = features['image/object/class/label']
@@ -41,23 +43,32 @@ with tf.Session() as sess:
     # Creates batches by randomly shuffling tensors
     # images, labels = tf.train.shuffle_batch([image, label], batch_size=10, capacity=30, num_threads=1, min_after_dequeue=10)
 
-        # Initialize all global and local variables
+
+    # Initialize all global and local variables
     init_op = tf.group(tf.global_variables_initializer(), tf.local_variables_initializer())
     sess.run(init_op)
+
     # Create a coordinator and run all QueueRunner objects
-    coord = tf.train.Coordinator()
-    threads = tf.train.start_queue_runners(coord=coord)
-    for batch_index in range(5):
-        img, lbl = sess.run([images, labels])
-        img = img.astype(np.uint8)
-        for j in range(6):
-            plt.subplot(2, 3, j+1)
-            plt.imshow(img[j, ...])
-            plt.title('cat' if lbl[j]==0 else 'dog')
-        plt.show()
-    # Stop the threads
-    coord.request_stop()
+    # coord = tf.train.Coordinator()
+    # threads = tf.train.start_queue_runners(coord=coord)
+    # for batch_index in range(5):
+    #     img, lbl = sess.run([images, labels])
+    #     img = img.astype(np.uint8)
+    #     for j in range(6):
+    #         plt.subplot(2, 3, j+1)
+    #         plt.imshow(img[j, ...])
+    #         plt.title('cat' if lbl[j]==0 else 'dog')
+    #     plt.show()
+    # # Stop the threads
+    # coord.request_stop()
     
-    # Wait for threads to stop
-    coord.join(threads)
-    sess.close()
+    # # Wait for threads to stop
+    # coord.join(threads)
+
+    # print('***')
+    # image_out, label_out = sess.run([image, label])
+    # print('!!!')
+
+    image_out = image.eval(session=sess)
+
+    # sess.close()

@@ -1,40 +1,59 @@
 # CUFCTL-TrafficVision
 
-[Setup on Palmetto](docs/SETUP.md)
+## Installation
+```
+git clone --recursive https://github.com/hakillha/CUFCTL-TrafficVision.git
+```
 
-TMP1=/home/yingges/Desktop/Research/2018Q1
+[Installation](docs/INSTALLATION.md)
 
-export PYTHONPATH=${TMP1}/CUFCTL-TrafficVision/models/research:${TMP1}/CUFCTL-TrafficVision/models/research/slim
+## Data Conversion
+Right now label map needs to be provided as an input instead of being generated in the process.
+```
+# Example
+# Run with --help for more information on options
+python python/create_tfrecords.py \
+    --in_path=path/to/ua_detrac \
+```
+## Training
+Download pretrained models:
 
-wget https://github.com/google/protobuf/releases/download/v3.2.0/protoc-3.2.0-linux-x86_64.zip  
-unzip protoc-3.2.0-linux-x86_64.zip -d ${HOME}/bin/protoc/  
-rm protoc-3.2.0-linux-x86_64.zip  
-export PATH=${PATH}:${HOME}/bin/protoc/bin
-
-python python/copy_data.py \  
---in_path=/media/yingges/TOSHIBA\ EXT/datasets/trafficvision/UADETRAC/Insight-MVT_Annotation_Train \  
---out_path=/media/yingges/TOSHIBA\ EXT/datasets/trafficvision/UADETRAC_TFODAPI
-
-python python/create_tfrecords.py \  
---in_path=/media/yingges/TOSHIBA\ EXT/datasets/trafficvision/UADETRAC/Insight-MVT_Annotation_Train \  
---out_path=/media/yingges/TOSHIBA\ EXT/datasets/trafficvision/UADETRAC_TFODAPI
-
-python python/create_tfrecords.py \  
---in_path=/media/yingges/TOSHIBA\ EXT/datasets/trafficvision/UADETRAC \  
---out_path=/media/yingges/TOSHIBA\ EXT/datasets/trafficvision/UADETRAC_TFODAPI
-
-python python/create_tfrecords.py \  
-	--in_path=/media/yingges/TOSHIBA\ EXT/datasets/trafficvision/UADETRAC \  
-	--occ_ratio_threshold=0.4
-
-# palmetto  
+Training:
+```
 python models/research/object_detection/train.py \
 	--logtostderr \
-	--pipeline_config_path=data/pretrained/faster_rcnn_resnet50_coco_2018_01_28/faster_rcnn_resnet50_coco.config01 \
-	--train_dir=data/checkpoints/faster_rcnn_resnet50_ua_detrac_2018_04_29_01
-
-# local  
-python models/research/object_detection/train.py \
+	--pipeline_config_path=${PIPELINE_CONFIG} \
+	--train_dir=${TRAIN_DIR}
+```
+## Evaluation
+```
+python models/research/object_detection/eval.py \
 	--logtostderr \
-	--pipeline_config_path=data/pretrained/faster_rcnn_resnet50_coco_2018_01_28/faster_rcnn_resnet50_coco.config \
-	--train_dir=data/checkpoints/faster_rcnn_resnet50_ua_detrac_2018_04_29_01
+	--pipeline_config_path=${PIPELINE_CONFIG} \
+	--checkpoint_dir=${TRAIN_DIR} \
+	--eval_dir=${EVAL_DIR}
+```
+## Inference
+Frozen graph exportation:
+```
+python models/research/object_detection/export_inference_graph.py \
+	--pipeline_config_path=${PIPELINE_CONFIG} \
+	--trained_checkpoint_prefix=${TRAIN_PATH} \
+	--output_directory=${OUTPUT_DIR}
+```
+Inference:
+```
+# Example
+# Run with --help for more information on options
+python inference101.py \
+	--model_dir=data/checkpoints/ssd_mobilenet_v2 \
+	--test_data_dir=path/to/ua_detrac/Insight-MVT_Annotation_Test \
+	--video_name=MVI_40714
+```
+Create output video from detection output images:
+```
+# Example
+python python/create_video.py \
+	--image_dir=data/inference_output/MVI_40714 \
+	--video_name=video01.avi
+```

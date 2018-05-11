@@ -1,0 +1,34 @@
+#PBS -N train_ua_detrac_01
+#PBS -l select=1:ncpus=20:mem=64gb:ngpus=2:gpu_model=p100,walltime=48:00:00
+#PBS -j oe
+
+module add cuda-toolkit/8.0.44
+module add cuDNN/8.0v6
+
+module add anaconda3/4.3.0
+module add cuda-toolkit/9.0.176
+module add cuDNN/9.0v7
+
+source activate trafficv
+
+cd ${TRAFFICVISION}
+# python models/research/object_detection/train.py \
+# 	--logtostderr \
+# 	--pipeline_config_path=data/pretrained/faster_rcnn_resnet50_coco_2018_01_28/faster_rcnn_resnet50_coco.config01 \
+# 	--train_dir=data/checkpoints/faster_rcnn_resnet50_ua_detrac_2018_04_29_01
+
+
+python models/research/object_detection/train.py \
+	--logtostderr \
+	--pipeline_config_path=${TRAFFICVISION}/data/pretrained/faster_rcnn_inception_resnet_v2_atrous_coco_2018_01_28/pipeline.config \
+	--train_dir=${TRAFFICVISION}/ata/checkpoints/faster_rcnn_inception_resnet_v2_ua_detrac_2018_05_05_01
+
+python models/research/object_detection/train.py \
+        --logtostderr \
+        --pipeline_config_path=${TRAFFICVISION}/data/pretrained/faster_rcnn_nas_lowproposals_coco_2018_01_28/pipeline.config \
+        --train_dir=${TRAFFICVISION}/data/checkpoints/faster_rcnn_nas_lowproposals_coco_2018_05_05_01
+
+python models/research/object_detection/export_inference_graph.py \
+		--pipeline_config_path=data/checkpoints/ssd_mobilenet_v2_ua_detrac_2018_05_03_01/pipeline.config \
+		--trained_checkpoint_prefix=data/checkpoints/ssd_mobilenet_v2_ua_detrac_2018_05_03_01/model.ckpt-345972 \
+		--output_directory=data/checkpoints/ssd_mobilenet_v2_01
