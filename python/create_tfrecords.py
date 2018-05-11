@@ -4,29 +4,34 @@ from modules.utils.data_utils import create_data_dir, copy_images, convert_xml
 from modules.utils.data_utils import create_labelmap, create_trainval_set, gen_tfrecords
 
 def parse_args():
-	parser = argparse.ArgumentParser(description='')
+	parser = argparse.ArgumentParser(description='Convert the UA-DETRAC dataset into tfrecords.')
 	parser.add_argument('--in_path',
 						dest='in_path', 
 						help='The folder that contains \'Insight-MVT_Annotation_Train\'.')
 	parser.add_argument('--out_path',
 						default='data/tfrecords',
-						dest='out_path', help='')
+						dest='out_path', 
+						help='Defaults to \'data/tfrecords\'')
 	parser.add_argument('--label_map_path',
 						default='data/ua_detrac_labelmap.pbtxt',
 						dest='label_map_path',
-						help='Specify input label map file path.')
+						help='Specify input label map file path. '
+						'Defaults to \'data/ua_detrac_labelmap.pbtxt\'')
 	parser.add_argument('--occ_ratio_threshold', 
 						default=0.4,
 						dest='occ_ratio_threshold', 
-						help='Discard the bounding boxes with occlusion exceeding this ratio.')
+						help='Discard the bounding boxes with occlusion exceeding this ratio. '
+						'Defaults to .4.')
 	parser.add_argument('--train', 
 						default=0.8,
 						dest='train', 
-						help='Training set split.')
+						help='Training set split (e.g., 0.8). Should add up to 1 with the val split. '
+						'Defaults to .8.')
 	parser.add_argument('--val', 
 						default=0.2,
 						dest='val', 
-						help='Validation set split.')
+						help='Validation set split (e.g., 0.2). Should add up to 1 with the train split. '
+						'Defaults to .2.')
 	return parser.parse_args()
 
 args = parse_args()
