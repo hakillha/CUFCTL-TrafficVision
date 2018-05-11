@@ -25,12 +25,12 @@ def parse_args():
 	parser.add_argument('--train', 
 						default=0.8,
 						dest='train', 
-						help='Training set split (e.g., 0.8). Should add up to 1 with the val split. '
+						help='Training set split (e.g., 0.8). Must add up to 1 with the val split. '
 						'Defaults to .8.')
 	parser.add_argument('--val', 
 						default=0.2,
 						dest='val', 
-						help='Validation set split (e.g., 0.2). Should add up to 1 with the train split. '
+						help='Validation set split (e.g., 0.2). Must add up to 1 with the train split. '
 						'Defaults to .2.')
 	return parser.parse_args()
 

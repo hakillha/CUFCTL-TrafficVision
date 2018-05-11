@@ -13,22 +13,22 @@ from object_detection.utils import visualization_utils as vis_util
 flags = tf.app.flags
 flags.DEFINE_string('model_dir',
 					'data/checkpoints/ssd_mobilenet_v2_01',
-					'Frozen graph dir.')
+					'Frozen graph directory.')
 flags.DEFINE_string('labelmap_path',
 					'data/ua_detrac_labelmap.pbtxt',
-					'Labelmap path.')
+					'Labelmap path. Defaults to \'data/ua_detrac_labelmap.pbtxt\'')
 flags.DEFINE_string('test_data_dir',
 					'/media/yingges/TOSHIBA EXT/datasets/trafficvision/UADETRAC/Insight-MVT_Annotation_Test',
 					'Test images dir.')
 flags.DEFINE_string('video_name',
 					'MVI_40714',
-					'Video name.')
+					'Which video sequence to run inference on.')
 flags.DEFINE_string('output_dir',
 					'data/inference_output',
-					'Output dir.')
+					'Defaults to \'data/inference_output\'')
 flags.DEFINE_integer('classnum', 
 					 4,
-					 '# of classes.')
+					 'Number of classes.')
 FLAGS = flags.FLAGS
 
 def run_inference_for_single_image(image, graph):
