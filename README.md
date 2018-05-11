@@ -42,14 +42,14 @@ Inference:
 # Example
 # Run with --help for more information on options
 python inference101.py \
-    --model_dir=data/checkpoints/ssd_mobilenet_v2 \
-    --test_data_dir=path/to/ua_detrac/Insight-MVT_Annotation_Test \
-    --video_name=MVI_40714
+	--model_dir=data/checkpoints/ssd_mobilenet_v2 \
+	--test_data_dir=path/to/ua_detrac/Insight-MVT_Annotation_Test \
+	--video_name=MVI_40714
 ```
 Create output video from detection output images:
 ```
 # Example
 python python/create_video.py \
-    --image_dir=data/inference_output/MVI_40714 \
-    --video_name=video01.avi
+	--image_dir=data/inference_output/MVI_40714 \
+	--video_name=video01.avi
 ```
