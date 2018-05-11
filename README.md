@@ -1,6 +1,10 @@
 # CUFCTL-TrafficVision
 
 ## Installation
+```
+git clone --recursive https://github.com/hakillha/CUFCTL-TrafficVision.git
+```
+
 [Installation](docs/INSTALLATION.md)
 
 ## Data Conversion
