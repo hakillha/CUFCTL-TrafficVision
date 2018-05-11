@@ -1,6 +1,7 @@
 **__pycache__
 **.DS_Store
 **.pyc
+ata/*
 data/tfrecords/*
 data/pretrained/*
 data/checkpoints/*

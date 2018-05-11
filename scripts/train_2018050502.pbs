@@ -1,0 +1,18 @@
+#PBS -N train_ua_detrac_09
+#PBS -l select=1:ncpus=20:mem=64gb:ngpus=2:gpu_model=k40,walltime=48:00:00
+#PBS -j oe
+
+module add anaconda3/4.3.0
+module add cuda-toolkit/9.0.176
+module add cuDNN/9.0v7
+
+source activate trafficv
+
+cd ${TRAFFICVISION}
+
+python models/research/object_detection/train.py \
+	--logtostderr \
+	--pipeline_config_path=${TRAFFICVISION}/data/pretrained/faster_rcnn_nas_lowproposals_coco_2018_01_28/pipeline.config \
+	--train_dir=${TRAFFICVISION}/data/checkpoints/faster_rcnn_nas_lowproposals_coco_2018_05_05_01
+
+

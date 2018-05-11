@@ -1,0 +1,17 @@
+#PBS -N eval_ua_detrac_01
+#PBS -l select=1:ncpus=20:mem=64gb:ngpus=2:gpu_model=k40,walltime=48:00:00
+#PBS -j oe
+
+module add anaconda3/4.3.0
+module add cuda-toolkit/9.0.176
+module add cuDNN/9.0v7
+
+source activate trafficv
+
+cd ${TRAFFICVISION}
+python models/research/object_detection/eval.py \
+        --logtostderr \
+        --pipeline_config_path=data/checkpoints/faster_rcnn_resnet50_ua_detrac_2018_04_30_01/pipeline.config \
+        --checkpoint_dir=data/checkpoints/faster_rcnn_resnet50_ua_detrac_2018_04_30_01 \
+	--eval_dir=data/eval/faster_rcnn_resnet50_ua_detrac_2018_04_30_01
+
