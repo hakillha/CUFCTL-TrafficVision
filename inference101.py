@@ -3,7 +3,8 @@ import os
 import tensorflow as tf
 
 from python.modules.utils.data_utils import better_makedirs
-
+import matplotlib
+matplotlib.use('Agg')
 from matplotlib import pyplot as plt
 from PIL import Image
 from object_detection.utils import label_map_util
@@ -30,6 +31,8 @@ flags.DEFINE_integer('classnum',
 					 4,
 					 'Number of classes.')
 FLAGS = flags.FLAGS
+
+imageSize = (1920, 1080, 3)
 
 def run_inference_for_single_image(image, graph):
   with graph.as_default():
@@ -105,26 +108,21 @@ def main(_):
 	# test_img_paths = []
 	output_dir = os.path.join(FLAGS.output_dir, video_name)
 	better_makedirs(output_dir)
-
+	fhand = open('detection_file.txt','a')
 	for imfile in test_img_paths:
+		c1 = imfile.rsplit("/")[-1].split(".")[0][3:]
 		image = Image.open(imfile)
 		image = load_image_into_numpy_array(image)
 		output_dict = run_inference_for_single_image(image, detection_graph)
-		vis_util.visualize_boxes_and_labels_on_image_array(
-			image,
-			output_dict['detection_boxes'],
-			output_dict['detection_classes'],
-			output_dict['detection_scores'],
-			category_index,
-			instance_masks=output_dict.get('detection_masks'),
-			use_normalized_coordinates=True,
-			line_thickness=8)
-		fig = plt.figure(figsize=(12, 8))
-		plt.imshow(image)
-		# plt.show()
-		plt.savefig(output_dir + '/' + imfile.split('/')[-1].split('.')[0] + '.png',
-					bbox_inches='tight')
-		plt.close()
+		img_scale = [imageSize[0], imageSize[1], imageSize[0], imageSize[1]]
+		num=0
+		for d in output_dict['detection_boxes']:
+			bbox = [i*j for i,j in zip(img_scale, d)]
+			d_f = [int(c1),-1,bbox[0],bbox[1],bbox[2],bbox[3],output_dict['detection_scores'][num],-1,-1]
+			num = num+1
+			fhand.write(str(str(d_f)[1:-1]+'\n'))
+
+	fhand.close()
 
 if __name__ == '__main__':
 	tf.app.run()
