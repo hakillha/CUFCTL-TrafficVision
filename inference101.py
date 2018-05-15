@@ -20,6 +20,7 @@ flags.DEFINE_string('video_name',
 					'Which video sequence to run inference on.')
 flags.DEFINE_string('whole_video_path',
 					None,
+					# '/media/yingges/TOSHIBA EXT/datasets/DOT/traffic_video_samples/SR20_AT_MOG_PRESET_5.avi',
 					'The path of the undivided video to run inference on.')
 flags.DEFINE_string('output_dir',
 					'data/inference_output',
@@ -45,7 +46,10 @@ def main(_):
 					label_map, max_num_classes=FLAGS.classnum, use_display_name=True)
 	category_index = label_map_util.create_category_index(categories)
 
-	inference_on_frames(FLAGS, detection_graph, category_index)
+	if FLAGS.whole_video_path:
+		inference_on_video(FLAGS, detection_graph, category_index)
+	else:
+		inference_on_frames(FLAGS, detection_graph, category_index)
 
 if __name__ == '__main__':
 	tf.app.run()

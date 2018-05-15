@@ -1,3 +1,4 @@
+import cv2
 import numpy as np
 import os
 import tensorflow as tf
@@ -91,4 +92,30 @@ def inference_on_frames(FLAGS, detection_graph, category_index):
 		plt.close()
 
 def inference_on_video(FLAGS, detection_graph, category_index):
-  pass
+  output_dir = os.path.join(FLAGS.output_dir, FLAGS.whole_video_path.split('/')[-1])
+  better_makedirs(output_dir)
+
+  vidcap = cv2.VideoCapture(FLAGS.whole_video_path)
+  success, image = vidcap.read()
+  count = 0
+  # success = True
+  while success:
+    output_dict = run_inference_for_single_image(image, detection_graph)
+    vis_util.visualize_boxes_and_labels_on_image_array(
+      image,
+      output_dict['detection_boxes'],
+      output_dict['detection_classes'],
+      output_dict['detection_scores'],
+      category_index,
+      instance_masks=output_dict.get('detection_masks'),
+      use_normalized_coordinates=True,
+      line_thickness=8)
+    fig = plt.figure(figsize=(12, 8))
+    plt.imshow(image)
+    # plt.show()
+    plt.savefig(output_dir + '/' + 'frame%d' % count + '.png',
+          bbox_inches='tight')
+    plt.close()
+
+    success, image = vidcap.read()
+    count += 1
