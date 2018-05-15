@@ -19,9 +19,10 @@ flags.DEFINE_string('video_name',
 					'MVI_40714',
 					'Which video sequence to run inference on.')
 flags.DEFINE_string('whole_video_path',
-					None,
-					# '/media/yingges/TOSHIBA EXT/datasets/DOT/traffic_video_samples/SR20_AT_MOG_PRESET_5.avi',
-					'The path of the undivided video to run inference on.')
+					# None,
+					'/media/yingges/TOSHIBA EXT/datasets/DOT/traffic_video_samples/SR20_AT_MOG_PRESET_5.avi',
+					'The path of the undivided video to run inference on. '
+					'If specified the inference on whole videos will be prioritized.')
 flags.DEFINE_string('output_dir',
 					'data/inference_output',
 					'Defaults to \'data/inference_output\'')
@@ -32,7 +33,6 @@ FLAGS = flags.FLAGS
 
 def main(_):
 	fg_path = os.path.join(FLAGS.model_dir, 'frozen_inference_graph.pb')
-	print(fg_path)
 	detection_graph = tf.Graph()
 	with detection_graph.as_default():
 		od_graph_def = tf.GraphDef()
