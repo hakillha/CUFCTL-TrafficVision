@@ -1,5 +1,7 @@
 # CUFCTL-TrafficVision
 
+Reading argument descryptions with --help is strongly recommended before running processes of this repo.
+
 ## Installation
 ```
 git clone --recursive https://github.com/hakillha/CUFCTL-TrafficVision.git
