@@ -1,7 +1,7 @@
 # Installation
 ## Local Machine
 ### Dependencies
-* Placeholder
+* OpenCV
 ### Steps
 Set up environment variable
 ```
@@ -29,7 +29,6 @@ Add necessary modules:
 module add anaconda3/4.3.0
 module add cuda-toolkit/9.0.176
 module add cuDNN/9.0v7
-module add opencv/2.4.9
 ```
 
 Activate the Conda environment:
