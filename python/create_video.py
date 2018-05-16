@@ -1,3 +1,4 @@
+import argparse
 import cv2
 import os
 
@@ -19,12 +20,15 @@ video_name = args.video_name
 images = sorted([img for img in os.listdir(image_folder) if img.endswith(".png")])
 frame = cv2.imread(os.path.join(image_folder, images[0]))
 height, width, layers = frame.shape
+video = cv2.VideoWriter(video_name, cv2.VideoWriter_fourcc(*"MJPG"), 5, (width, height))
 
-video = cv2.VideoWriter(video_name, cv2.VideoWriter_fourcc(*"MJPG"), 25, (width, height))
-
+count = 0
 for image in images:
 	# print(image)
-	video.write(cv2.imread(os.path.join(image_folder, image)))
-
+	input_im_path = os.path.join(image_folder, image)
+	print(input_im_path)
+	video.write(cv2.imread(input_im_path))
+	count += 1
+print(count)
 cv2.destroyAllWindows()
 video.release()

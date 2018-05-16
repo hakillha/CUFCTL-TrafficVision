@@ -63,43 +63,18 @@ def load_image_into_numpy_array(image):
       (im_height, im_width, 3)).astype(np.uint8)
 
 def inference_on_frames(FLAGS, detection_graph, category_index):
-	video_name = FLAGS.video_name
-	video_dir = os.path.join(FLAGS.test_data_dir, video_name)
-	test_img_paths = [os.path.join(video_dir, im) 
-						for im in os.listdir(video_dir)]
-	# test_img_paths = []
-	output_dir = os.path.join(FLAGS.output_dir, video_name)
-	better_makedirs(output_dir)
-
-	for imfile in test_img_paths:
-		image = Image.open(imfile)
-		image = load_image_into_numpy_array(image)
-		output_dict = run_inference_for_single_image(image, detection_graph)
-		vis_util.visualize_boxes_and_labels_on_image_array(
-			image,
-			output_dict['detection_boxes'],
-			output_dict['detection_classes'],
-			output_dict['detection_scores'],
-			category_index,
-			instance_masks=output_dict.get('detection_masks'),
-			use_normalized_coordinates=True,
-			line_thickness=8)
-		fig = plt.figure(figsize=(12, 8))
-		plt.imshow(image)
-		# plt.show()
-		plt.savefig(output_dir + '/' + imfile.split('/')[-1].split('.')[0] + '.png',
-					bbox_inches='tight')
-		plt.close()
-
-def inference_on_video(FLAGS, detection_graph, category_index):
-  output_dir = os.path.join(FLAGS.output_dir, FLAGS.whole_video_path.split('/')[-1])
+  video_name = FLAGS.video_name
+  video_dir = os.path.join(FLAGS.test_data_dir, video_name)
+  test_img_paths = [os.path.join(video_dir, im) 
+  					for im in os.listdir(video_dir)]
+  # test_img_paths = []
+  output_dir = os.path.join(FLAGS.output_dir, video_name)
   better_makedirs(output_dir)
 
-  vidcap = cv2.VideoCapture(FLAGS.whole_video_path)
-  success, image = vidcap.read()
-  count = 0
-  # success = True
-  while success:
+  for imfile in test_img_paths:
+    image = Image.open(imfile)
+    image = load_image_into_numpy_array(image)
+    # cv2.imwrite(output_dir + '/' + imfile.split('/')[-1].split('.')[0] + '.png', image)
     output_dict = run_inference_for_single_image(image, detection_graph)
     vis_util.visualize_boxes_and_labels_on_image_array(
       image,
@@ -110,11 +85,69 @@ def inference_on_video(FLAGS, detection_graph, category_index):
       instance_masks=output_dict.get('detection_masks'),
       use_normalized_coordinates=True,
       line_thickness=8)
-    fig = plt.figure(figsize=(12, 8))
+    # fig = plt.figure(figsize=(12, 8))
+    # plt.imshow(image)
+    # plt.savefig(output_dir + '/' + imfile.split('/')[-1].split('.')[0] + '.png',
+    # 			      bbox_inches='tight')
+    # plt.close()
+    # cv2.imwrite(output_dir + '/' + imfile.split('/')[-1].split('.')[0] + '.png', image)
+
+def inference_on_video(FLAGS, detection_graph, category_index):
+  output_dir = os.path.join(FLAGS.output_dir, FLAGS.whole_video_path.split('/')[-1])
+  better_makedirs(output_dir)
+
+  vidcap = cv2.VideoCapture(FLAGS.whole_video_path)
+  success, image = vidcap.read()
+  count = 0
+  # success = True
+  while success:
+    image = image[:,:,[2,1,0]]
+    output_dict = run_inference_for_single_image(image, detection_graph)
+    vis_util.visualize_boxes_and_labels_on_image_array(
+      image,
+      output_dict['detection_boxes'],
+      output_dict['detection_classes'],
+      output_dict['detection_scores'],
+      category_index,
+      instance_masks=output_dict.get('detection_masks'),
+      use_normalized_coordinates=True,
+      line_thickness=8)
+    # fig = plt.figure(figsize=(12, 8))
+    # plt.imshow(image)
+    # plt.savefig(output_dir + '/frame%d' % count + '.png',
+    #             bbox_inches='tight')
+    # plt.close()
+    cv2.imwrite(output_dir + '/frame%d.png' % count, image)
+
+    success, image = vidcap.read()
+    count += 1
+
+def inference_on_video_test(FLAGS, detection_graph, category_index):
+  output_dir = os.path.join(FLAGS.output_dir, FLAGS.whole_video_path.split('/')[-1])
+  better_makedirs(output_dir)
+
+  video_dir = 'data/input/SR20_AT_MOG_PRESET_5.avi'
+  test_img_paths = [os.path.join(video_dir, im) 
+            for im in os.listdir(video_dir)]
+
+  vidcap = cv2.VideoCapture(FLAGS.whole_video_path)
+  success, image = vidcap.read()
+  count = 0
+  for imfile in sorted(test_img_paths):
+    image = image[:,:,[2,1,0]]
+
+    image01 = Image.open(imfile)
+    image01 = load_image_into_numpy_array(image01)
+    print('*****')
+    print(image[100,100,:])
+    print(image01[100,100,:])
+
+    fig = plt.figure()
+    fig.add_subplot(1,2,1)
     plt.imshow(image)
-    # plt.show()
-    plt.savefig(output_dir + '/' + 'frame%d' % count + '.png',
-          bbox_inches='tight')
+    fig.add_subplot(1,2,2)
+    plt.imshow(image01)
+    plt.show()
     plt.close()
 
     success, image = vidcap.read()

@@ -23,6 +23,6 @@ count = 0
 outdir = os.path.join(args.out_dir, args.in_path.split('/')[-1])
 better_makedirs(outdir)
 while success:
-	cv.imwrite(outdir + '/frame%d.png' % count, image)
+	cv2.imwrite(outdir + '/frame%d.png' % count, image)
 	success, image = vidcap.read()
 	count += 1
