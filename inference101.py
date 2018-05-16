@@ -26,6 +26,10 @@ flags.DEFINE_string('whole_video_path',
 flags.DEFINE_string('output_dir',
 					'data/inference_output',
 					'Defaults to \'data/inference_output\'')
+flags.DEFINE_string('channel_transpose',
+					'[2, 1, 0]',
+					'Swap the channels when input data don\'t come in as RGB order. '
+					'Mostly useful when running on videos.')
 flags.DEFINE_integer('classnum', 
 					 4,
 					 'Number of classes.')

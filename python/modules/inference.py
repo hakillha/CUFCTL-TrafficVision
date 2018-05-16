@@ -101,7 +101,7 @@ def inference_on_video(FLAGS, detection_graph, category_index):
   count = 0
   # success = True
   while success:
-    image = image[:,:,[2,1,0]]
+    image = image[:,:,eval(FLAGS.channel_transpose)]
     output_dict = run_inference_for_single_image(image, detection_graph)
     vis_util.visualize_boxes_and_labels_on_image_array(
       image,
