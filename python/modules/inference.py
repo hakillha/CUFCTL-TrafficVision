@@ -67,14 +67,12 @@ def inference_on_frames(FLAGS, detection_graph, category_index):
   video_dir = os.path.join(FLAGS.test_data_dir, video_name)
   test_img_paths = [os.path.join(video_dir, im) 
   					for im in os.listdir(video_dir)]
-  # test_img_paths = []
   output_dir = os.path.join(FLAGS.output_dir, video_name)
   better_makedirs(output_dir)
 
   for imfile in test_img_paths:
     image = Image.open(imfile)
     image = load_image_into_numpy_array(image)
-    # cv2.imwrite(output_dir + '/' + imfile.split('/')[-1].split('.')[0] + '.png', image)
     output_dict = run_inference_for_single_image(image, detection_graph)
     vis_util.visualize_boxes_and_labels_on_image_array(
       image,
@@ -90,7 +88,7 @@ def inference_on_frames(FLAGS, detection_graph, category_index):
     # plt.savefig(output_dir + '/' + imfile.split('/')[-1].split('.')[0] + '.png',
     # 			      bbox_inches='tight')
     # plt.close()
-    # cv2.imwrite(output_dir + '/' + imfile.split('/')[-1].split('.')[0] + '.png', image)
+    cv2.imwrite(output_dir + '/' + imfile.split('/')[-1].split('.')[0] + '.png', image)
 
 def inference_on_video(FLAGS, detection_graph, category_index):
   output_dir = os.path.join(FLAGS.output_dir, FLAGS.whole_video_path.split('/')[-1])
@@ -118,7 +116,6 @@ def inference_on_video(FLAGS, detection_graph, category_index):
     #             bbox_inches='tight')
     # plt.close()
     cv2.imwrite(output_dir + '/frame%d.png' % count, image)
-
     success, image = vidcap.read()
     count += 1
 
