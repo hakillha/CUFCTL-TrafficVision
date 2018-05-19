@@ -71,14 +71,14 @@ def create_trainval_set(in_path, train, val):
 
 def gen_tfrecords(in_path, out_path, 
 				  label_map_path, 
-				  output_postfix,
+				  output_suffix,
 				  train=0.8, 
 				  val=0.2, 
 				  occ_ratio_threshold=0.4,
 				  bb_sqrt_area_threshold=70):
 	better_makedirs(out_path)
-	train_writer = tf.python_io.TFRecordWriter(out_path + '/uadetrac_train' + output_postfix + '.record')
-	val_writer = tf.python_io.TFRecordWriter(out_path + '/uadetrac_val' + output_postfix + '.record')
+	train_writer = tf.python_io.TFRecordWriter(out_path + '/uadetrac_train' + output_suffix + '.record')
+	val_writer = tf.python_io.TFRecordWriter(out_path + '/uadetrac_val' + output_suffix + '.record')
 	img_height = 540
 	img_width = 960
 	label_map_dict = label_map_util.get_label_map_dict(label_map_path)

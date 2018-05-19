@@ -22,18 +22,24 @@ def parse_args():
 						default='data/input/stats/ua_detrac',
 						dest='out_dir')
 	parser.add_argument('--classnum', 
+						type=int,
 						default=4,
 						dest='classnum',
 						help='Number of classes.')
 	parser.add_argument('--folder_size', 
+						type=int,
 						default=500,
 						dest='folder_size',
 						help='Keep size of subfolders in check for easy viewing.')
 	parser.add_argument('--mode', 
-						default='{"scale_hist": True, "gt_vis": False}',
+						default='{"scale_hist": False, "gt_vis": True}',
 						help='Specify the processing you would like to run.')
 	parser.add_argument('--scale_data_file', 
 						default='data/input/stats/ua_detrac/scale_data.npy',
+						help='Data file for drawing scale histogram.')
+	parser.add_argument('--vis_scale_threshold', 
+						type=float,
+						default=100000,
 						help='Data file for drawing scale histogram.')
 	return parser.parse_args()
 
@@ -91,11 +97,12 @@ def stats_parse(args, next_ele, category_index):
 				keep_rows = []
 				for idx, bbox in enumerate(bb):
 					sqrt_area = math.sqrt((bbox[2] - bbox[0]) * height * (bbox[3] - bbox[1]) * width)
-					if sqrt_area < 50:
+					if sqrt_area < args.vis_scale_threshold:
 						keep_rows.append(idx)
 					bb_sqrt_area.append(sqrt_area)
 				bb = bb[keep_rows,:]
 
+				# can skip images with no bb
 				if mode['gt_vis']:
 					if count % args.folder_size == 0:
 						new_folder = os.path.join(args.out_dir, 'gt_vis', str(count))

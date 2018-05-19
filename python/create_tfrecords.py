@@ -14,22 +14,26 @@ def parse_args():
 						default='data/ua_detrac_labelmap.pbtxt',
 						help='Specify input label map file path. '
 						'Defaults to \'data/ua_detrac_labelmap.pbtxt\'')
-	parser.add_argument('--output_postfix', 
+	parser.add_argument('--output_suffix', 
 						default='',
 						help='Identifier that differentiates record files generated for different purposes.')
 	parser.add_argument('--occ_ratio_threshold', 
+						type=float,
 						default=0.4,
 						help='Discard the bounding boxes with occlusion exceeding this ratio. '
 						'Defaults to .4.')
 	parser.add_argument('--sqrt_area_threshold', 
+						type=float,
 						default=70,
 						help='Discard the bounding boxes with sqrt area larger than this number. '
-						'Defaults to 70.')
+						'Defaults to 70. Set it to a large number (e.g. 100000) to turn it off.')
 	parser.add_argument('--train', 
+						type=float,
 						default=1,
 						help='Training set split (e.g., 0.8). Must add up to 1 with the val split. '
 						'Defaults to .8.')
 	parser.add_argument('--val', 
+						type=float,
 						default=0,
 						help='Validation set split (e.g., 0.2). Must add up to 1 with the train split. '
 						'Defaults to .2.')
@@ -44,7 +48,7 @@ args = parse_args()
 # create_labelmap(labels)
 # create_trainval_set(args.in_path, train=0.8, val=0.2)
 
-gen_tfrecords(args.in_path, args.out_path, output_postfix=args.output_postfix,
+gen_tfrecords(args.in_path, args.out_path, output_suffix=args.output_postfix,
 			  train=args.train, val=args.val, label_map_path=args.label_map_path,
 			  occ_ratio_threshold=args.occ_ratio_threshold,
 			  bb_sqrt_area_threshold=args.sqrt_area_threshold)
