@@ -123,7 +123,7 @@ def stats_parse(args, next_ele, category_index):
 					# plt.imshow(record['image'])
 					# plt.show()
 					# plt.close()
-					cv2.imwrite(new_folder + '/' + record['image/filename'] + '_image%d.png' % count, image[:,:,[2,1,0]])
+					cv2.imwrite(new_folder + '/' + record['image/filename'].split('.')[0] + '_image%d.png' % count, image[:,:,[2,1,0]])
 
 				count += 1
 		except tf.errors.OutOfRangeError:
