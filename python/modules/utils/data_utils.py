@@ -96,8 +96,9 @@ def gen_tfrecords(in_path, out_path,
 		for child in root:
 			if child.tag == 'frame':
 				# check if the frame has no annotation?
-				filename = video + '_' + image_list[img_idx]
-				with tf.gfile.GFile(pjoin(img_path3, image_list[img_idx]), 'rb') as fid:
+				imgfilename = 'img%05d' % int(child.attrib['num']) + '.jpg'
+				wholefilename = video + '_' + imgfilename
+				with tf.gfile.GFile(pjoin(img_path3, imgfilename), 'rb') as fid:
 					encoded_jpg = fid.read()
 				key = hashlib.sha256(encoded_jpg).hexdigest()
 				
@@ -144,9 +145,9 @@ def gen_tfrecords(in_path, out_path,
 											'image/height': dataset_util.int64_feature(img_height),
 											'image/width': dataset_util.int64_feature(img_width),
 											'image/filename': dataset_util.bytes_feature(
-											  filename.encode('utf8')),
+											  wholefilename.encode('utf8')),
 											'image/source_id': dataset_util.bytes_feature(
-											  filename.encode('utf8')),
+											  wholefilename.encode('utf8')),
 											'image/key/sha256': dataset_util.bytes_feature(key.encode('utf8')),
 											'image/encoded': dataset_util.bytes_feature(encoded_jpg),
 											'image/format': dataset_util.bytes_feature('jpeg'.encode('utf8')),

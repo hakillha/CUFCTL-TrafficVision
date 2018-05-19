@@ -29,12 +29,12 @@ def parse_args():
 						'Defaults to 70. Set it to a large number (e.g. 100000) to turn it off.')
 	parser.add_argument('--train', 
 						type=float,
-						default=1,
+						default=0.8,
 						help='Training set split (e.g., 0.8). Must add up to 1 with the val split. '
 						'Defaults to .8.')
 	parser.add_argument('--val', 
 						type=float,
-						default=0,
+						default=0.2,
 						help='Validation set split (e.g., 0.2). Must add up to 1 with the train split. '
 						'Defaults to .2.')
 	return parser.parse_args()
@@ -48,7 +48,7 @@ args = parse_args()
 # create_labelmap(labels)
 # create_trainval_set(args.in_path, train=0.8, val=0.2)
 
-gen_tfrecords(args.in_path, args.out_path, output_suffix=args.output_postfix,
+gen_tfrecords(args.in_path, args.out_path, output_suffix=args.output_suffix,
 			  train=args.train, val=args.val, label_map_path=args.label_map_path,
 			  occ_ratio_threshold=args.occ_ratio_threshold,
 			  bb_sqrt_area_threshold=args.sqrt_area_threshold)

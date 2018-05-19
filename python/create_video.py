@@ -13,6 +13,7 @@ def parse_args():
 						dest='video_name', 
 						help='Output video name.')
 	parser.add_argument('--frame_rate',
+						type=int,
 						default=20,
 						dest='frame_rate', 
 						help='Output video frame rate, should be identical with that of the original video.')
