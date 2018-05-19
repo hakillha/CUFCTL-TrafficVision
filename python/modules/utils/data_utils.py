@@ -1,4 +1,4 @@
-import os, shutil
+import math, os, shutil
 import tensorflow as tf
 import hashlib
 
@@ -69,10 +69,16 @@ def create_trainval_set(in_path, train, val):
 # 	f_train.close()
 # 	f_val.close()
 
-def gen_tfrecords(in_path, out_path='data/tfrecords', label_map_path='data/ua_detrac_labelmap.pbtxt', train=0.8, val=0.2, occ_ratio_threshold=0.4):
+def gen_tfrecords(in_path, out_path, 
+				  label_map_path, 
+				  output_postfix,
+				  train=0.8, 
+				  val=0.2, 
+				  occ_ratio_threshold=0.4,
+				  bb_sqrt_area_threshold=70):
 	better_makedirs(out_path)
-	train_writer = tf.python_io.TFRecordWriter(out_path + '/uadetrac_train.record')
-	val_writer = tf.python_io.TFRecordWriter(out_path + '/uadetrac_val.record')
+	train_writer = tf.python_io.TFRecordWriter(out_path + '/uadetrac_train' + output_postfix + '.record')
+	val_writer = tf.python_io.TFRecordWriter(out_path + '/uadetrac_val' + output_postfix + '.record')
 	img_height = 540
 	img_width = 960
 	label_map_dict = label_map_util.get_label_map_dict(label_map_path)
@@ -94,8 +100,6 @@ def gen_tfrecords(in_path, out_path='data/tfrecords', label_map_path='data/ua_de
 				filename = video + '_' + image_list[img_idx]
 				with tf.gfile.GFile(pjoin(img_path3, image_list[img_idx]), 'rb') as fid:
 					encoded_jpg = fid.read()
-					# print(type(encoded_jpg))
-					# print(len(encoded_jpg))
 				key = hashlib.sha256(encoded_jpg).hexdigest()
 				
 				xmin = []
@@ -122,6 +126,18 @@ def gen_tfrecords(in_path, out_path='data/tfrecords', label_map_path='data/ua_de
 					ymin.append(float(bbox.attrib['top']) / img_height)
 					xmax.append((float(bbox.attrib['left']) + bb_width) / img_width)
 					ymax.append((float(bbox.attrib['top']) + bb_height) / img_height)
+
+					xmin_ = []
+					ymin_ = []
+					xmax_ = []
+					ymax_ = []
+					for idx, _ in enumerate(xmin):
+						sqrt_area = math.sqrt((xmax[idx] - xmin[idx]) * img_width * (ymax[idx] - ymin[idx]) * img_height)
+						if sqrt_area < bb_sqrt_area_threshold:
+							xmin_.append(xmin[idx])
+							ymin_.append(ymin[idx])
+							xmax_.append(xmax[idx])
+							ymax_.append(ymax[idx])
 					
 					att = detect[1]
 					classes_text.append(att.attrib['vehicle_type'].encode('utf8'))
@@ -141,10 +157,10 @@ def gen_tfrecords(in_path, out_path='data/tfrecords', label_map_path='data/ua_de
 										'image/key/sha256': dataset_util.bytes_feature(key.encode('utf8')),
 										'image/encoded': dataset_util.bytes_feature(encoded_jpg),
 										'image/format': dataset_util.bytes_feature('jpeg'.encode('utf8')),
-										'image/object/bbox/xmin': dataset_util.float_list_feature(xmin),
-										'image/object/bbox/xmax': dataset_util.float_list_feature(xmax),
-										'image/object/bbox/ymin': dataset_util.float_list_feature(ymin),
-										'image/object/bbox/ymax': dataset_util.float_list_feature(ymax),
+										'image/object/bbox/xmin': dataset_util.float_list_feature(xmin_),
+										'image/object/bbox/xmax': dataset_util.float_list_feature(xmax_),
+										'image/object/bbox/ymin': dataset_util.float_list_feature(ymin_),
+										'image/object/bbox/ymax': dataset_util.float_list_feature(ymax_),
 										'image/object/class/text': dataset_util.bytes_list_feature(classes_text),
 										'image/object/class/label': dataset_util.int64_list_feature(classes),
 										'image/object/difficult': dataset_util.int64_list_feature(difficult_obj),
