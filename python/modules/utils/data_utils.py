@@ -82,7 +82,6 @@ def gen_tfrecords(in_path, out_path,
 	img_height = 540
 	img_width = 960
 	label_map_dict = label_map_util.get_label_map_dict(label_map_path)
-	n = train / val + 1
 
 	img_path1 = 'Insight-MVT_Annotation_Train'
 	img_path2 = pjoin(in_path, img_path1)
@@ -115,65 +114,62 @@ def gen_tfrecords(in_path, out_path,
 					bbox = detect[0]
 					bb_width = float(bbox.attrib['width'])
 					bb_height = float(bbox.attrib['height'])
-
+					if math.sqrt(bb_width * bb_height) > bb_sqrt_area_threshold:
+						continue
 					if len(detect) == 3:
 						occ = detect[2][0]
 						occ_ratio = float(occ.attrib['width']) * float(occ.attrib['height']) / (bb_width * bb_height )
 						if occ_ratio > occ_ratio_threshold:
 							continue
 
-					xmin.append(float(bbox.attrib['left']) / img_width)
-					ymin.append(float(bbox.attrib['top']) / img_height)
-					xmax.append((float(bbox.attrib['left']) + bb_width) / img_width)
-					ymax.append((float(bbox.attrib['top']) + bb_height) / img_height)
-
-					xmin_ = []
-					ymin_ = []
-					xmax_ = []
-					ymax_ = []
-					for idx, _ in enumerate(xmin):
-						sqrt_area = math.sqrt((xmax[idx] - xmin[idx]) * img_width * (ymax[idx] - ymin[idx]) * img_height)
-						if sqrt_area < bb_sqrt_area_threshold:
-							xmin_.append(xmin[idx])
-							ymin_.append(ymin[idx])
-							xmax_.append(xmax[idx])
-							ymax_.append(ymax[idx])
-					
+					bb_xmin = float(bbox.attrib['left']) / img_width
+					bb_ymin = float(bbox.attrib['top']) / img_height
+					bb_xmax = (float(bbox.attrib['left']) + bb_width) / img_width
+					bb_ymax = (float(bbox.attrib['top']) + bb_height) / img_height
+					xmin.append(bb_xmin)
+					ymin.append(bb_ymin)
+					xmax.append(bb_xmax)
+					ymax.append(bb_ymax)
 					att = detect[1]
 					classes_text.append(att.attrib['vehicle_type'].encode('utf8'))
 					classes.append(label_map_dict[att.attrib['vehicle_type']])
 					difficult_obj.append(0)
 					truncated.append(0)
 					poses.append('Unspecified'.encode('utf8'))
+					
+				# The image is skipped if there is no bb
+				if xmin:
+					# type checking if error
+					example = tf.train.Example(features=tf.train.Features(feature={
+											'image/height': dataset_util.int64_feature(img_height),
+											'image/width': dataset_util.int64_feature(img_width),
+											'image/filename': dataset_util.bytes_feature(
+											  filename.encode('utf8')),
+											'image/source_id': dataset_util.bytes_feature(
+											  filename.encode('utf8')),
+											'image/key/sha256': dataset_util.bytes_feature(key.encode('utf8')),
+											'image/encoded': dataset_util.bytes_feature(encoded_jpg),
+											'image/format': dataset_util.bytes_feature('jpeg'.encode('utf8')),
+											'image/object/bbox/xmin': dataset_util.float_list_feature(xmin),
+											'image/object/bbox/xmax': dataset_util.float_list_feature(xmax),
+											'image/object/bbox/ymin': dataset_util.float_list_feature(ymin),
+											'image/object/bbox/ymax': dataset_util.float_list_feature(ymax),
+											'image/object/class/text': dataset_util.bytes_list_feature(classes_text),
+											'image/object/class/label': dataset_util.int64_list_feature(classes),
+											'image/object/difficult': dataset_util.int64_list_feature(difficult_obj),
+											'image/object/truncated': dataset_util.int64_list_feature(truncated),
+											'image/object/view': dataset_util.bytes_list_feature(poses),
+											}))
 
-				# type checking if error
-				example = tf.train.Example(features=tf.train.Features(feature={
-										'image/height': dataset_util.int64_feature(img_height),
-										'image/width': dataset_util.int64_feature(img_width),
-										'image/filename': dataset_util.bytes_feature(
-										  filename.encode('utf8')),
-										'image/source_id': dataset_util.bytes_feature(
-										  filename.encode('utf8')),
-										'image/key/sha256': dataset_util.bytes_feature(key.encode('utf8')),
-										'image/encoded': dataset_util.bytes_feature(encoded_jpg),
-										'image/format': dataset_util.bytes_feature('jpeg'.encode('utf8')),
-										'image/object/bbox/xmin': dataset_util.float_list_feature(xmin_),
-										'image/object/bbox/xmax': dataset_util.float_list_feature(xmax_),
-										'image/object/bbox/ymin': dataset_util.float_list_feature(ymin_),
-										'image/object/bbox/ymax': dataset_util.float_list_feature(ymax_),
-										'image/object/class/text': dataset_util.bytes_list_feature(classes_text),
-										'image/object/class/label': dataset_util.int64_list_feature(classes),
-										'image/object/difficult': dataset_util.int64_list_feature(difficult_obj),
-										'image/object/truncated': dataset_util.int64_list_feature(truncated),
-										'image/object/view': dataset_util.bytes_list_feature(poses),
-										}))
-
-				img_idx += 1
-				
-				if img_idx % n == 0:
-					val_writer.write(example.SerializeToString())
-				else:
-					train_writer.write(example.SerializeToString())
+					img_idx += 1
+					
+					if val:
+						if img_idx % (train / val + 1) == 0:
+							val_writer.write(example.SerializeToString())
+						else:
+							train_writer.write(example.SerializeToString())
+					else:
+						train_writer.write(example.SerializeToString())
 
 	val_writer.close()
 	train_writer.close()

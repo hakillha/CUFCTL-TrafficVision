@@ -26,11 +26,11 @@ def parse_args():
 						help='Discard the bounding boxes with sqrt area larger than this number. '
 						'Defaults to 70.')
 	parser.add_argument('--train', 
-						default=0.8,
+						default=1,
 						help='Training set split (e.g., 0.8). Must add up to 1 with the val split. '
 						'Defaults to .8.')
 	parser.add_argument('--val', 
-						default=0.2,
+						default=0,
 						help='Validation set split (e.g., 0.2). Must add up to 1 with the train split. '
 						'Defaults to .2.')
 	return parser.parse_args()
