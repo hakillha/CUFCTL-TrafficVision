@@ -26,6 +26,12 @@ flags.DEFINE_string('whole_video_path',
 flags.DEFINE_string('output_dir',
 					'data/inference_output',
 					'Defaults to \'data/inference_output\'')
+flags.DEFINE_string('output_format',
+					None,
+					'Output format can either be "image"s or "text".')
+flags.DEFINE_string('text_file_name',
+					None,
+					'Name of the text output file.')
 flags.DEFINE_string('channel_transpose',
 					'[2, 1, 0]',
 					'Swap the channels when input data don\'t come in as RGB order. '

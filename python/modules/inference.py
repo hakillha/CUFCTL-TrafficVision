@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-import os
+import os, re
 import tensorflow as tf
 
 from python.modules.utils.data_utils import better_makedirs
@@ -62,11 +62,22 @@ def load_image_into_numpy_array(image):
   return np.array(image.getdata()).reshape(
       (im_height, im_width, 3)).astype(np.uint8)
 
+def save_as_text_file(out, height, width, output_dict, imgname=None, count=None):
+  if imgname:
+    frame_count = int(re.search('\d+', imgname).group())
+  elif count:
+    frame_count = count
+  for idx, bb in enumerate(output_dict['detection_boxes']):
+    bbox = [i * j for i, j in zip(bb, [width, height, width, height])]
+    detect_line = [frame_count, -1, bbox[0], bbox[1], bbox[2], bbox[3], 
+                   output_dict['detection_scores'][idx], -1, -1]
+    out.write(str(detect_line)[1:-1] + '\n')
+
 def inference_on_frames(FLAGS, detection_graph, category_index):
   video_name = FLAGS.video_name
   video_dir = os.path.join(FLAGS.test_data_dir, video_name)
   test_img_paths = [os.path.join(video_dir, im) 
-  					for im in os.listdir(video_dir)]
+  					         for im in os.listdir(video_dir)]
   output_dir = os.path.join(FLAGS.output_dir, video_name)
   better_makedirs(output_dir)
 
@@ -74,21 +85,23 @@ def inference_on_frames(FLAGS, detection_graph, category_index):
     image = Image.open(imfile)
     image = load_image_into_numpy_array(image)
     output_dict = run_inference_for_single_image(image, detection_graph)
-    vis_util.visualize_boxes_and_labels_on_image_array(
-      image,
-      output_dict['detection_boxes'],
-      output_dict['detection_classes'],
-      output_dict['detection_scores'],
-      category_index,
-      instance_masks=output_dict.get('detection_masks'),
-      use_normalized_coordinates=True,
-      line_thickness=8)
-    # fig = plt.figure(figsize=(12, 8))
-    # plt.imshow(image)
-    # plt.savefig(output_dir + '/' + imfile.split('/')[-1].split('.')[0] + '.png',
-    # 			      bbox_inches='tight')
-    # plt.close()
-    cv2.imwrite(output_dir + '/' + imfile.split('/')[-1].split('.')[0] + '.png', image)
+    if FLAGS.output_format == 'image':
+      vis_util.visualize_boxes_and_labels_on_image_array(
+        image,
+        output_dict['detection_boxes'],
+        output_dict['detection_classes'],
+        output_dict['detection_scores'],
+        category_index,
+        instance_masks=output_dict.get('detection_masks'),
+        use_normalized_coordinates=True,
+        line_thickness=8)
+      cv2.imwrite(output_dir + '/' + imfile.split('/')[-1].split('.')[0] + '.png', image)
+    elif FLAGS.output_format == 'text':
+      if not os.path.isfile(FLAGS.text_file_name):
+        out = open(os.path.join(FLAGS.output_dir, FLAGS.text_file_name), 'w')
+      save_as_text_file(out, image.shape[0], image.shape[1], output_dict, imgname=imfile)
+  if FLAGS.output_format == 'text':
+    out.close()
 
 def inference_on_video(FLAGS, detection_graph, category_index):
   output_dir = os.path.join(FLAGS.output_dir, FLAGS.whole_video_path.split('/')[-1])
@@ -96,28 +109,29 @@ def inference_on_video(FLAGS, detection_graph, category_index):
 
   vidcap = cv2.VideoCapture(FLAGS.whole_video_path)
   success, image = vidcap.read()
-  count = 0
-  # success = True
+  count = 1
   while success:
     image = image[:,:,eval(FLAGS.channel_transpose)]
     output_dict = run_inference_for_single_image(image, detection_graph)
-    vis_util.visualize_boxes_and_labels_on_image_array(
-      image,
-      output_dict['detection_boxes'],
-      output_dict['detection_classes'],
-      output_dict['detection_scores'],
-      category_index,
-      instance_masks=output_dict.get('detection_masks'),
-      use_normalized_coordinates=True,
-      line_thickness=8)
-    # fig = plt.figure(figsize=(12, 8))
-    # plt.imshow(image)
-    # plt.savefig(output_dir + '/frame%d' % count + '.png',
-    #             bbox_inches='tight')
-    # plt.close()
-    cv2.imwrite(output_dir + '/frame%d.png' % count, image)
+    if FLAGS.output_format == 'image':
+      vis_util.visualize_boxes_and_labels_on_image_array(
+        image,
+        output_dict['detection_boxes'],
+        output_dict['detection_classes'],
+        output_dict['detection_scores'],
+        category_index,
+        instance_masks=output_dict.get('detection_masks'),
+        use_normalized_coordinates=True,
+        line_thickness=8)
+      cv2.imwrite(output_dir + '/frame%d.png' % count, image)
+    elif FLAGS.output_format == 'text':
+      if not os.path.isfile(FLAGS.text_file_name):
+        out = open(os.path.join(FLAGS.output_dir, FLAGS.text_file_name), 'w')
+      save_as_text_file(out, image.shape[0], image.shape[1], output_dict, count=count)
     success, image = vidcap.read()
     count += 1
+  if FLAGS.output_format == 'text':
+    out.close()
 
 def inference_on_video_test(FLAGS, detection_graph, category_index):
   output_dir = os.path.join(FLAGS.output_dir, FLAGS.whole_video_path.split('/')[-1])
