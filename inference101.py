@@ -20,7 +20,6 @@ flags.DEFINE_string('video_name',
 					'Which video sequence to run inference on.')
 flags.DEFINE_string('whole_video_path',
 					None,
-					# '/media/yingges/TOSHIBA EXT/datasets/DOT/traffic_video_samples/SR20_AT_MOG_PRESET_5.avi',
 					'The path of the undivided video to run inference on. '
 					'If specified the inference on whole videos will be prioritized.')
 flags.DEFINE_string('output_dir',
@@ -29,9 +28,9 @@ flags.DEFINE_string('output_dir',
 flags.DEFINE_string('output_format',
 					None,
 					'Output format can either be "image"s or "text".')
-flags.DEFINE_string('text_file_name',
-					None,
-					'Name of the text output file.')
+# flags.DEFINE_string('text_file_name',
+# 					None,
+# 					'Name of the text output file.')
 flags.DEFINE_string('channel_transpose',
 					'[2, 1, 0]',
 					'Swap the channels when input data don\'t come in as RGB order. '

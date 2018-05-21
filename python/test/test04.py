@@ -1,4 +1,4 @@
-import argparse
+# import argparse
 # import re
 # # import tensorflow as tf
 
@@ -20,14 +20,18 @@ import argparse
 # print(natural_sort(x))
 # print(sorted(x))
 
-def parse_args():
-	parser = argparse.ArgumentParser(description='Convert the UA-DETRAC dataset into tfrecords.')
-	parser.add_argument('--sqrt_area_threshold', 
-						default=70,
-						help='Discard the bounding boxes with sqrt area larger than this number. '
-						'Defaults to 70.')
-	return parser.parse_args()
+# def parse_args():
+# 	parser = argparse.ArgumentParser(description='Convert the UA-DETRAC dataset into tfrecords.')
+# 	parser.add_argument('--sqrt_area_threshold', 
+# 						default=70,
+# 						help='Discard the bounding boxes with sqrt area larger than this number. '
+# 						'Defaults to 70.')
+# 	return parser.parse_args()
 
-args = parse_args()
+# args = parse_args()
 
-print(80 < args.sqrt_area_threshold)
+# print(80 < args.sqrt_area_threshold)
+
+out = open('test01', 'w')
+for idx in range(10):
+	out.write('hi%d' % idx + '\n')

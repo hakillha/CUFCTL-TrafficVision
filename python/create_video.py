@@ -1,7 +1,8 @@
 import argparse
 import cv2
 import os
-import re
+
+from modules.utils.misc_utils import natural_sort
 
 def parse_args():
 	parser = argparse.ArgumentParser(
@@ -24,10 +25,7 @@ def parse_args():
 						'Mostly useful when the inference is run on videos.')
 	return parser.parse_args()
 
-def natural_sort(l):
-	# match integers and convert to actual intergers
-	int_value = lambda key: int(re.search('\d+', key).group())
-	return sorted(l, key=int_value)
+
 
 args = parse_args()
 image_folder = args.image_dir

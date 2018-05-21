@@ -4,6 +4,7 @@ import os, re
 import tensorflow as tf
 
 from python.modules.utils.data_utils import better_makedirs
+from python.modules.utils.misc_utils import natural_sort
 
 from matplotlib import pyplot as plt
 from PIL import Image
@@ -64,22 +65,24 @@ def load_image_into_numpy_array(image):
 
 def save_as_text_file(out, height, width, output_dict, imgname=None, count=None):
   if imgname:
-    frame_count = int(re.search('\d+', imgname).group())
+    frame_count = int(re.search('\d+', imgname.split('/')[-1]).group())
   elif count:
     frame_count = count
-  for idx, bb in enumerate(output_dict['detection_boxes']):
+  nonzero = np.where(output_dict['detection_boxes'][:,1] > 0)[0]
+  for idx, bb in enumerate(output_dict['detection_boxes'][nonzero,:]):
     bbox = [i * j for i, j in zip(bb, [width, height, width, height])]
     detect_line = [frame_count, -1, bbox[0], bbox[1], bbox[2], bbox[3], 
-                   output_dict['detection_scores'][idx], -1, -1]
+                   output_dict['detection_scores'][nonzero][idx], -1, -1]
     out.write(str(detect_line)[1:-1] + '\n')
 
 def inference_on_frames(FLAGS, detection_graph, category_index):
-  video_name = FLAGS.video_name
-  video_dir = os.path.join(FLAGS.test_data_dir, video_name)
+  video_dir = os.path.join(FLAGS.test_data_dir, FLAGS.video_name)
   test_img_paths = [os.path.join(video_dir, im) 
-  					         for im in os.listdir(video_dir)]
-  output_dir = os.path.join(FLAGS.output_dir, video_name)
+  					         for im in natural_sort(os.listdir(video_dir))]
+  output_dir = os.path.join(FLAGS.output_dir, FLAGS.video_name)
   better_makedirs(output_dir)
+  if FLAGS.output_format == 'text':
+    out = open(os.path.join(FLAGS.output_dir, FLAGS.video_name) + '.txt', 'w')
 
   for imfile in test_img_paths:
     image = Image.open(imfile)
@@ -97,15 +100,16 @@ def inference_on_frames(FLAGS, detection_graph, category_index):
         line_thickness=8)
       cv2.imwrite(output_dir + '/' + imfile.split('/')[-1].split('.')[0] + '.png', image)
     elif FLAGS.output_format == 'text':
-      if not os.path.isfile(FLAGS.text_file_name):
-        out = open(os.path.join(FLAGS.output_dir, FLAGS.text_file_name), 'w')
       save_as_text_file(out, image.shape[0], image.shape[1], output_dict, imgname=imfile)
+
   if FLAGS.output_format == 'text':
     out.close()
 
 def inference_on_video(FLAGS, detection_graph, category_index):
   output_dir = os.path.join(FLAGS.output_dir, FLAGS.whole_video_path.split('/')[-1])
   better_makedirs(output_dir)
+  if FLAGS.output_format == 'text':
+    out = open(os.path.join(FLAGS.output_dir, FLAGS.whole_video_path.split('/')[-1]) + '.txt', 'w')
 
   vidcap = cv2.VideoCapture(FLAGS.whole_video_path)
   success, image = vidcap.read()
@@ -125,11 +129,10 @@ def inference_on_video(FLAGS, detection_graph, category_index):
         line_thickness=8)
       cv2.imwrite(output_dir + '/frame%d.png' % count, image)
     elif FLAGS.output_format == 'text':
-      if not os.path.isfile(FLAGS.text_file_name):
-        out = open(os.path.join(FLAGS.output_dir, FLAGS.text_file_name), 'w')
       save_as_text_file(out, image.shape[0], image.shape[1], output_dict, count=count)
     success, image = vidcap.read()
     count += 1
+
   if FLAGS.output_format == 'text':
     out.close()
 
