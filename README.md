@@ -59,3 +59,6 @@ python python/create_video.py \
 	--image_dir=data/inference_output/MVI_40714 \
 	--video_name=video01.avi
 ```
+
+## Updates
+* Support for outputting detections in text files added. Specify "--output_format=text" when running inference to obtain text file output.
