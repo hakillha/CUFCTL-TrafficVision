@@ -38,3 +38,9 @@ python models/research/object_detection/train.py \
 	--logtostderr \
 	--pipeline_config_path=data/pretrained/faster_rcnn_resnet50_coco_2018_01_28/faster_rcnn_resnet50_coco.config \
 	--train_dir=data/checkpoints/faster_rcnn_resnet50_ua_detrac_2018_04_29_01
+	
+#SORT Implementation
+<video src="video.mp4" width="320" height="200" controls preload></video>
+
+#Deep SORT implementation
+<video src="2018-05-18_12h55_10.mp4" width="320" height="200" controls preload></video>
