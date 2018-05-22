@@ -39,9 +39,10 @@ python models/research/object_detection/train.py \
 	--pipeline_config_path=data/pretrained/faster_rcnn_resnet50_coco_2018_01_28/faster_rcnn_resnet50_coco.config \
 	--train_dir=data/checkpoints/faster_rcnn_resnet50_ua_detrac_2018_04_29_01
 	
-#SORT Implementation
-![Alt Txt](https://github.com/hakillha/CUFCTL-TrafficVision/blob/master/2018-05-18_11h48_04.gif)
+# SORT Implementation
+python sort.py --display
+![Alt Txt](https://github.com/hakillha/CUFCTL-TrafficVision/blob/master/2018-05-22_11h14_23.gif)
 
-#Deep SORT implementation
-
-![Alt Txt](https://github.com/hakillha/CUFCTL-TrafficVision/blob/master/2018-05-18_12h55_10.gif)
+# Deep SORT implementation
+python deep_sort_app.py --sequence_dir=./data/MVI_39051/ --detection_file=/mnt/ubuntu_mnt/models/MVI_39051.npy --min_confidence=0.3
+![Alt Txt](https://github.com/hakillha/CUFCTL-TrafficVision/blob/master/2018-05-22_10h57_56.gif)
