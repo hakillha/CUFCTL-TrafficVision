@@ -41,8 +41,8 @@ python models/research/object_detection/train.py \
 	
 # SORT Implementation
 python sort.py --display
-![Alt Txt](https://github.com/hakillha/CUFCTL-TrafficVision/blob/master/2018-05-22_11h14_23.gif)
+![Alt Txt](https://github.com/hakillha/CUFCTL-TrafficVision/blob/master/2018-05-22_11h14_23.gif = 250x250)
 
 # Deep SORT implementation
 python deep_sort_app.py --sequence_dir=./data/MVI_39051/ --detection_file=/mnt/ubuntu_mnt/models/MVI_39051.npy --min_confidence=0.3
-![Alt Txt](https://github.com/hakillha/CUFCTL-TrafficVision/blob/master/2018-05-22_10h57_56.gif)
+![Alt Txt](https://github.com/hakillha/CUFCTL-TrafficVision/blob/master/2018-05-22_10h57_56.gif = 250x250)
