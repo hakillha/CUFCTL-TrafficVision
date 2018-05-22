@@ -40,7 +40,7 @@ python models/research/object_detection/train.py \
 	--train_dir=data/checkpoints/faster_rcnn_resnet50_ua_detrac_2018_04_29_01
 	
 #SORT Implementation
-<video src="video.mp4" width="320" height="200" controls preload></video>
+![Alt Txt](https://github.com/hakillha/CUFCTL-TrafficVision/blob/master/2018-05-18_11h48_04.gif)
 
 #Deep SORT implementation
 
