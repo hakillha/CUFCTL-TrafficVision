@@ -62,4 +62,4 @@ python python/create_video.py \
 
 ## Updates
 * Support for outputting detections in text files added. Specify "--output_format=text" when running inference to obtain text file output.
-* Special attention on the image channels is required atm since the project is updated to use OpenCV to read/write images which is more efficient while could also work improperly during reading in or writing out image channels. Therefore an additional argument for channel swap is created in inference and video creation scripts. Please check out the command line argument details for more details.
+* Special attention on the image channels is required atm since the project is updated to use OpenCV to read/write images which is more efficient while could also work improperly during reading in or writing out image channels. Therefore an additional argument for channel swap is created in inference and video creation scripts. Please check out the command line argument descryption for more details.
