@@ -43,4 +43,5 @@ python models/research/object_detection/train.py \
 <video src="video.mp4" width="320" height="200" controls preload></video>
 
 #Deep SORT implementation
+
 ![Alt Txt](https://github.com/hakillha/CUFCTL-TrafficVision/blob/master/2018-05-18_12h55_10.gif)
